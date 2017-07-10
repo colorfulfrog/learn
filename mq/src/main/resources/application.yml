@@ -1,0 +1,46 @@
+server:
+  port: 8085
+  context-path: /ppm-mq-sender
+ 
+#指定激活环境，local、sit、pro 
+spring:
+  profiles:
+    active: local
+  application:
+    name: ppm-mq-sender
+  
+#本地环境  
+---
+spring:
+  profiles: local
+  
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: admin
+    password: admin123
+    virtualHost: /
+    
+#测试环境  
+---
+spring:
+  profiles: sit
+  
+  rabbitmq:
+    host: 192.168.3.57
+    port: 5672
+    username: elppm_user
+    password: elppm
+    virtualHost: /
+    
+#生产环境  
+---
+spring:
+  profiles: pro
+  
+  rabbitmq:
+    host: 119.23.124.27
+    port: 5672
+    username: elppm_user
+    password: elppm
+    virtualHost: /
