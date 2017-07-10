@@ -1,0 +1,59 @@
+server:
+  port: 8086
+  context-path: /ppm-mq-recevier
+ 
+#指定激活环境，local、sit、pro 
+spring:
+  profiles:
+    active: local
+  application:
+    name: ppm-mq-recevier
+  
+#本地环境  
+---
+spring:
+  profiles: local
+  
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: admin
+    password: admin123
+    virtualHost: /
+  mail:
+    host: mail.e-lead.cn
+    port: 25
+    username: liwei@e-lead.cn
+    password: lovemyself2016
+    default-encoding: UTF-8
+    properties:
+      mail:
+        smtp:
+          auth: true
+        starttls:
+          enable: false
+        debug: true
+    
+#测试环境  
+---
+spring:
+  profiles: sit
+  
+  rabbitmq:
+    host: 192.168.3.57
+    port: 5672
+    username: elppm_user
+    password: elppm
+    virtualHost: /
+    
+#生产环境  
+---
+spring:
+  profiles: pro
+  
+  rabbitmq:
+    host: 119.23.124.27
+    port: 5672
+    username: elppm_user
+    password: elppm
+    virtualHost: /
