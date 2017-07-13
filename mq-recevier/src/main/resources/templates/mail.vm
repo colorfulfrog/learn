@@ -1,0 +1,6 @@
+<html>
+<body>
+    <h3>你好， ${username}, 这是一封模板邮件!</h3>
+    <h3><a href="${activation_url}">点击激活: ${activation_url}</a></h3>
+</body>
+</html>

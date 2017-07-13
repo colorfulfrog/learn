@@ -6,42 +6,57 @@ import java.io.StringWriter;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeUtility;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
+import com.elead.platform.common.api.message.SimpleTextMailDto;
+
 @Component
 public class MailService {
 	@Autowired
     private JavaMailSender javaMailSender;
+	
+	@Value("${spring.mail.username}")
+	private String defaultFrom;
 
-    public void testSimpleTextMail(){   //发送普通文本邮件
+	/**
+	 * 发送普通文本邮件
+	 * @param mail 邮件对象
+	 */
+    public void sendSimpleTextMail(SimpleTextMailDto mail){
         SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setFrom("liwei@e-lead.cn");// 发送者，可选的
-        mailMessage.setTo("671579557@qq.com");//接受者
-        mailMessage.setSubject("测试邮件");//主题
-        mailMessage.setText("Test Email send by javaMailSender!");//邮件内容
-
+        mailMessage.setFrom(StringUtils.isNotEmpty(mail.getFrom())?mail.getFrom():defaultFrom);// 发送者，可选的
+        mailMessage.setTo(mail.getTo());//接受者
+        mailMessage.setCc(mail.getCc());
+        mailMessage.setSubject(mail.getSubject());//主题
+        mailMessage.setText(mail.getTextContent());//邮件内容
         javaMailSender.send(mailMessage);
     }
 
-    public void testMimeMail() throws Exception {   //发送HTML格式的邮件
-
+    /**
+     * 发送简单Html邮件
+     * @param mail
+     * @throws Exception
+     */
+    public void sendMimeMail(SimpleTextMailDto mail) throws Exception {   //发送HTML格式的邮件
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
-        helper.setFrom("liwei@e-lead.cn");
-        helper.setTo("671579557@qq.com");
-        helper.setSubject("主题：嵌入静态资源");
-        helper.setText("<html><body><a href=\"http://www.baidu.com\" ></body></html>", true);
-
+        helper.setFrom(StringUtils.isNotEmpty(mail.getFrom())?mail.getFrom():defaultFrom);
+        helper.setTo(mail.getTo());
+        helper.setCc(mail.getCc());
+        helper.setSubject(mail.getSubject());
+        helper.setText(mail.getTextContent(), true);
         javaMailSender.send(mimeMessage);
     }
 
@@ -50,7 +65,7 @@ public class MailService {
 
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
-        helper.setFrom("liwei@e-lead.cn");
+        helper.setFrom("eleadrd@aliyun.com");
         helper.setTo("671579557@qq.com");
         helper.setSubject("主题：嵌入静态资源");
         helper.setText("<html><body><img src=\"cid:logo\" ></body></html>", true);
@@ -66,7 +81,7 @@ public class MailService {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
 
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);// 第二个参数设置为true，表示允许添加附件
-        helper.setFrom("liwei@e-lead.cn");
+        helper.setFrom("eleadrd@aliyun.com");
         helper.setTo("671579557@qq.com");
         helper.setSubject("发送含图片附件的邮件");
         helper.setText("含有附件的邮件");
@@ -81,7 +96,7 @@ public class MailService {
     public void testSendTemplateMail() throws Exception {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
-        helper.setFrom("liwei@e-lead.cn");
+        helper.setFrom("eleadrd@aliyun.com");
         helper.setTo("671579557@qq.com");
         helper.setSubject("主题：模板邮件");
 
@@ -93,7 +108,7 @@ public class MailService {
         VelocityContext context = new VelocityContext();
         context.put("username", "Velocity");
         context.put("activation_url", "http://www.baidu.com");
-        Template template = ve.getTemplate("mail.vm","UTF-8");
+        Template template = ve.getTemplate("templates/mail.vm","UTF-8");
         StringWriter sw = new StringWriter();
         template.merge(context, sw);
 

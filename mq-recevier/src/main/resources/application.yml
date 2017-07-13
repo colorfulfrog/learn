@@ -3,6 +3,9 @@ server:
   context-path: /ppm-mq-recevier
  
 #指定激活环境，local、sit、pro 
+#默认的profile为local，其他环境通过指定启动参数使用不同的profile，比如：
+#测试环境：java -jar my-spring-boot.jar --spring.profiles.active=sit
+#生产环境：java -jar my-spring-boot.jar --spring.profiles.active=pro
 spring:
   profiles:
     active: local
@@ -21,19 +24,28 @@ spring:
     password: admin123
     virtualHost: /
   mail:
-    host: mail.e-lead.cn
-    port: 25
-    username: liwei@e-lead.cn
-    password: lovemyself2016
+    host: smtp.aliyun.com
+    port: 465
+    username: eleadrd@aliyun.com
+    password: Elead2017
     default-encoding: UTF-8
+    protocol: smtps
     properties:
       mail:
         smtp:
           auth: true
+          socketFactory:
+            port: 465
+            class: javax.net.ssl.SSLSocketFactory
+          timeout: 25000
         starttls:
-          enable: false
+          enable: true
+          required: true
         debug: true
-    
+  velocity:    
+    resource-loader-path: classpath:/templates/    
+    charset: UTF-8
+
 #测试环境  
 ---
 spring:
@@ -46,17 +58,23 @@ spring:
     password: elppm
     virtualHost: /
   mail:
-    host: mail.e-lead.cn
-    port: 25
-    username: liwei@e-lead.cn
-    password: lovemyself2016
+    host: smtp.aliyun.com
+    port: 465
+    username: eleadrd@aliyun.com
+    password: Elead2017
     default-encoding: UTF-8
+    protocol: smtps
     properties:
       mail:
         smtp:
           auth: true
+          socketFactory:
+            port: 465
+            class: javax.net.ssl.SSLSocketFactory
+          timeout: 25000
         starttls:
-          enable: false
+          enable: true
+          required: true
         debug: true
     
 #生产环境  
@@ -71,15 +89,21 @@ spring:
     password: elppm
     virtualHost: /
   mail:
-    host: mail.e-lead.cn
-    port: 25
-    username: liwei@e-lead.cn
-    password: lovemyself2016
+    host: smtp.aliyun.com
+    port: 465
+    username: eleadrd@aliyun.com
+    password: Elead2017
     default-encoding: UTF-8
+    protocol: smtps
     properties:
       mail:
         smtp:
           auth: true
+          socketFactory:
+            port: 465
+            class: javax.net.ssl.SSLSocketFactory
+          timeout: 25000
         starttls:
-          enable: false
+          enable: true
+          required: true
         debug: true    

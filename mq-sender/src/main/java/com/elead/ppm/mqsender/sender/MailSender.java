@@ -1,7 +1,7 @@
 package com.elead.ppm.mqsender.sender;
 
-import java.util.Date;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
@@ -12,8 +12,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
+import com.elead.platform.common.api.message.SimpleTextMailDto;
+
 @Component
 public class MailSender {
+	private static final Logger LOGGER = LoggerFactory.getLogger(MailSender.class);
 	private static final String MAIL_ROUTE_KEY = "mail.route.key";
 	private static final String MAIL_QUEUE = "mailQueue";
 	
@@ -31,9 +34,8 @@ public class MailSender {
 		return BindingBuilder.bind(queue).to(directExchange).with(MAIL_ROUTE_KEY);
 	}
 	
-    public void send(String content) {
-    	content += new Date();
-        System.out.println("Sender : " + content);
-        this.rabbitTemplate.convertAndSend("directExchange",MAIL_ROUTE_KEY,content);
+    public void send(SimpleTextMailDto mail) {
+        LOGGER.info("---------Mail Sender:-----------"+mail);
+        this.rabbitTemplate.convertAndSend("directExchange",MAIL_ROUTE_KEY,mail);
     }
 }

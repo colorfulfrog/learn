@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.elead.platform.common.api.message.SimpleTextMailDto;
 import com.elead.ppm.mqsender.sender.MailSender;
 
 @RestController
@@ -16,7 +17,7 @@ public class SendController {
 	
 	
 	@PostMapping("/mail")
-	public void sendMail(@RequestBody String mailContent){
-		mailSender.send(mailContent);
+	public void sendMail(@RequestBody SimpleTextMailDto mail){
+		mailSender.send(mail);
 	}
 }
